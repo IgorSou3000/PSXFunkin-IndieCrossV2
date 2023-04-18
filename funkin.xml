@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Defines the ISO project -->
+<iso_project image_name="indie.bin" cue_sheet="indie.cue" no_xa="0">
+	<!-- Data track -->
+	<track type="data">
+		<!-- Identifiers -->
+		<identifiers
+			system        = "PLAYSTATION"
+			application   = "PLAYSTATION"
+			volume        = "PSXFUNKIN"
+			volume_set    = "PSXFUNKIN"
+			publisher     = "CUCKYDEV"
+			copyright     = "NINJAMUFFIN99"
+		/>
+		<license file="licensea.dat"/>
+		
+		<!-- Data directory tree -->
+		<directory_tree>
+			<!-- System -->
+			<file name = "system.cnf" type = "data" source = "iso/system.cnf"/>
+			<file name = "SCUS_0904.22" type = "data" source = "funkin.ps-exe"/>
+			<file name = "save16.tim" type = "data" source = "iso/save16.tim"/>
+			
+			<!-- Menu assets -->
+			<dir name = "menu">
+				<file name = "loading.tim" type = "data" source = "iso/menu/loading.tim"/>
+				<file name = "menu.arc" type = "data" source = "iso/menu/menu.arc"/>
+			</dir>
+			
+			<!-- Fonts -->
+			<dir name = "font">
+				<file name = "font1.tim" type = "data" source = "iso/font/font1.tim"/>
+			</dir>
+			
+			<!-- Stage assets -->
+			<dir name = "hud">
+				<file name = "hud0.tim" type = "data" source = "iso/hud/hud0.tim"/>
+				<file name = "hud0cup.tim" type = "data" source = "iso/hud/hud0cup.tim"/>
+				<file name = "hud1.tim" type = "data" source = "iso/hud/hud1.tim"/>
+				<file name = "hud1spk.tim" type = "data" source = "iso/hud/hud1spk.tim"/>
+				<file name = "intro.tim" type = "data" source = "iso/hud/intro.tim"/>
+			</dir>
+			
+			<!-- Stage assets -->
+			<dir name = "field">
+				<!-- Background art -->
+				<file name = "back.arc" type = "data" source = "iso/stage/field/back.arc"/>
+				
+				<file name = "1e.cht" type = "data" source = "iso/songs/snake-eyes/snake-eyes-easy.cht"/>
+				<file name = "1n.cht" type = "data" source = "iso/songs/snake-eyes/snake-eyes.cht"/>
+				<file name = "1h.cht" type = "data" source = "iso/songs/snake-eyes/snake-eyes-hard.cht"/>
+
+				<file name = "2e.cht" type = "data" source = "iso/songs/technicolor-tussle/technicolor-tussle-easy.cht"/>
+				<file name = "2n.cht" type = "data" source = "iso/songs/technicolor-tussle/technicolor-tussle.cht"/>
+				<file name = "2h.cht" type = "data" source = "iso/songs/technicolor-tussle/technicolor-tussle-hard.cht"/>
+
+				<file name = "3e.cht" type = "data" source = "iso/songs/knockout/knockout-easy.cht"/>
+				<file name = "3n.cht" type = "data" source = "iso/songs/knockout/knockout.cht"/>
+				<file name = "3h.cht" type = "data" source = "iso/songs/knockout/knockout-hard.cht"/>
+			</dir>
+			<!-- Character assets -->
+			<dir name = "char">
+				<!-- Boyfriend assets -->
+				<file name = "bf.arc" type = "data" source = "iso/characters/bf/main.arc"/>
+				<file name = "bfdead.tim" type = "data" source = "iso/characters/bf/dead.tim"/>
+			
+				<!-- Dad assets -->
+				<file name = "dad.arc" type = "data" source = "iso/characters/dad/main.arc"/>
+
+				<!-- Girlfriend assets -->
+				<file name = "gf.arc" type = "data" source = "iso/characters/gf/main.arc"/>
+				<file name = "speaker.tim" type = "data" source = "iso/characters/gf/speaker.tim"/>
+			</dir>
+
+			<!-- Sounds effects -->
+			<dir name = "sounds">
+				<!-- Menu Sounds -->
+				<file name = "scroll.vag" type = "data" source = "iso/sounds/menu/scroll.vag"/>
+				<file name = "confirm.vag" type = "data" source = "iso/sounds/menu/confirm.vag"/>
+				<file name = "cancel.vag" type = "data" source = "iso/sounds/menu/cancel.vag"/>
+
+				<!-- Stage Sounds -->
+				<file name = "intro3.vag" type = "data" source = "iso/sounds/stage/intro3.vag"/>
+				<file name = "intro2.vag" type = "data" source = "iso/sounds/stage/intro2.vag"/>
+				<file name = "intro1.vag" type = "data" source = "iso/sounds/stage/intro1.vag"/>
+				<file name = "intro0.vag" type = "data" source = "iso/sounds/stage/intro0.vag"/>
+
+				<!-- Cuphead Sounds -->
+				<file name = "parry.vag" type = "data" source = "iso/sounds/stage/cuphead/parry.vag"/>
+			</dir>
+
+			<!-- Movies -->
+			<dir name = "str">
+				<!-- Cuphead videos -->
+				<file name = "cup1.str" type = "str" source = "iso/movies/cuphead/1.str"/>
+				<file name = "cup2.str" type = "str" source = "iso/movies/cuphead/2.str"/>
+				<file name = "cup3.str" type = "str" source = "iso/movies/cuphead/3.str"/>
+			</dir>
+
+			<!-- Songs -->
+			<dir name = "songs">
+				<file name = "menu.mus" type = "xa" source = "iso/songs/menu.mus"/>
+				<file name = "cupa.mus" type = "xa" source = "iso/songs/cupa.mus"/>
+				<file name = "cupb.mus" type = "xa" source = "iso/songs/cupb.mus"/>
+			</dir>
+			
+			<!-- Dummy sectors -->
+			<dummy sectors="1024"/>
+		</directory_tree>
+	</track>
+</iso_project>
