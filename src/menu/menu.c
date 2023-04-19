@@ -22,7 +22,7 @@
 #include "psx/loadscr.h"
 
 #include "stage/stage.h"
-#include "characters/gf.h"
+#include "characters/cupgame.h"
 
 //Menu messages
 static const char *funny_messages[][2] = {
@@ -62,6 +62,14 @@ static const char *funny_messages[][2] = {
 	{"ITS A PORT", "ITS WORSE"},
 	{"WOW GATO", "WOW GATO"},
 	{"BALLS FISH", "BALLS FISH"},
+};
+
+//Menu Characters enum
+enum
+{
+	Character_Cuphead,
+
+	Character_Max,
 };
 
 //Menu state
@@ -116,8 +124,10 @@ static struct
 	} page_param;
 	
 	//Menu assets
-	Gfx_Tex tex_back, tex_titlebg, tex_story, tex_title, tex_main;
+	Gfx_Tex tex_back, tex_titlebg, tex_title, tex_main, tex_leftbg, tex_storyhud, tex_storybg;
 	FontData font_bold, font_arial, font_cdr;
+
+	Character *characters[Character_Max];
 } menu;
 
 //Internal menu functions
@@ -213,90 +223,81 @@ static void Menu_DifficultySelector(s32 x, s32 y)
 		}
 	}
 	
-	//Draw difficulty arrows
-	static const RECT arrow_src[2][2] = {
-		{{223, 64, 16, 32}, {223, 96, 16, 32}}, //left
-		{{239, 64, 16, 32}, {239, 96, 16, 32}}, //right
-	};
-
-	RECT arrow_dst[2] = {
-		{x - 40 - 16, y - 16, 16, 32}, //left
-		{x + 40, y - 16, 16, 32}, //right
-	};
-
-	//Check if pad left or right has pressed
-	u8 left_pressed = ((pad_state.held & PAD_LEFT) != 0);
-	u8 right_pressed = ((pad_state.held & PAD_RIGHT) != 0);
-	
-	Gfx_DrawTex(&menu.tex_story, &arrow_src[0][left_pressed], &arrow_dst[0]);
-	Gfx_DrawTex(&menu.tex_story, &arrow_src[1][right_pressed], &arrow_dst[1]);
-	
 	//Draw difficulty
 	static const RECT diff_srcs[] = {
-		{  0, 96, 64, 18},
-		{ 64, 96, 80, 18},
-		{144, 96, 64, 18},
+		{  0,  0,118, 10},
+		{  0, 10,118, 10},
+		{  0, 20,118, 10},
 	};
 	
 	const RECT *diff_src = &diff_srcs[menu.page_param.stage.diff];
 
 	RECT diff_dst = {
-		x - (diff_src->w / 2),
-		y - 9 + ((pad_state.press & (PAD_LEFT | PAD_RIGHT)) != 0),
+		x ,
+		y - 9,
 		diff_src->w,
 		diff_src->h,
 	};
 
-	Gfx_DrawTex(&menu.tex_story, diff_src, &diff_dst);
+	Gfx_DrawTex(&menu.tex_storyhud, diff_src, &diff_dst);
 }
 
-static void Menu_DrawWeek(const char *week, s32 x, s32 y, boolean flash)
+static void Menu_DrawWeek(const char *week, s32 x, s32 y, u32 col, boolean is_selected)
 {
 	u8 r, g, b;
 
-	//If flash be true, make the images be cyan
-	if (flash)
-	{
-		r = 45;
-		g = 235;
-		b = 235;
-	}
-	else
-	{
-		r = 128;
-		g = 128;
-		b = 128;
-	}
+	r = ((col >> 16) & 0xFF) >> 1;
+	g = ((col >> 8) & 0xFF) >> 1;
+	b = ((col >> 0) & 0xFF) >> 1;
 
 	//Draw label
-	if (week == NULL)
-	{
-		//Tutorial
-		RECT label_src = {0, 0, 112, 32};
-		RECT label_dst = {x, y, 112, 32};
-		Gfx_DrawTexCol(&menu.tex_story, &label_src, &label_dst, r, g, b);
-	}
+	RECT label_src = {0, 144, 49, 16};
+	RECT label_dst = {x, y,   49, 16};
+
+	if (is_selected)
+		Gfx_DrawTexCol(&menu.tex_storyhud, &label_src, &label_dst, r, g, b);
+
 	else
-	{
-		//Week
-		RECT label_src = {0, 32, 80, 32};
-		RECT label_dst = {x, y,  80, 32};
-
-		Gfx_DrawTexCol(&menu.tex_story, &label_src, &label_dst, r, g, b);
+		Gfx_BlendTexCol(&menu.tex_storyhud, &label_src, &label_dst, r, g, b, 0);
 		
-		//Number
-		x += 80;
-		for (; *week != '\0'; week++)
-		{
-			//Draw number
-			u8 i = *week - '0';
+	//Number
+	x += 50;
+	for (; *week != '\0'; week++)
+	{
+		//Draw number
+		u8 i = *week - '1';
 			
-			RECT num_src = {127 + ((i & 3) * 32), ((i / 4) * 32), 32, 32};
-			RECT num_dst = {x, y, 32, 32};
+		if (*week == '?')
+		{
+			//Draw two ?
+			RECT num_src = {0, 160, 16, 16};
+			RECT num_dst = {x, y, 16, 16};
 
-			Gfx_DrawTexCol(&menu.tex_story, &num_src, &num_dst, r, g, b);
-			x += 32;
+			if (is_selected)
+			{
+				Gfx_DrawTexCol(&menu.tex_storyhud, &num_src, &num_dst, r, g, b);
+				num_dst.x += 10;
+				Gfx_DrawTexCol(&menu.tex_storyhud, &num_src, &num_dst, r, g, b);
+			}
+			else
+			{
+				Gfx_BlendTexCol(&menu.tex_storyhud, &num_src, &num_dst, r, g, b, 0);
+				num_dst.x += 10;
+				Gfx_BlendTexCol(&menu.tex_storyhud, &num_src, &num_dst, r, g, b, 0);
+			}
 		}
+
+		else
+		{
+			RECT num_src = {64 + (i << 4), 144, 16, 16};
+			RECT num_dst = {x, y, 16, 16};
+
+			if (is_selected)
+				Gfx_DrawTexCol(&menu.tex_storyhud, &num_src, &num_dst, r, g, b);
+			else
+				Gfx_BlendTexCol(&menu.tex_storyhud, &num_src, &num_dst, r, g, b, 0);
+		}
+		x += 16;
 	}
 }
 
@@ -333,9 +334,11 @@ void Menu_Load(MenuPage page)
 	IO_Data menu_arc = IO_Read("\\MENU\\MENU.ARC;1");
 	Gfx_LoadTex(&menu.tex_back,  		Archive_Find(menu_arc, "back.tim"),  0);
 	Gfx_LoadTex(&menu.tex_titlebg,  Archive_Find(menu_arc, "titlebg.tim"), 0);
-	Gfx_LoadTex(&menu.tex_story, 		Archive_Find(menu_arc, "story.tim"), 0);
 	Gfx_LoadTex(&menu.tex_title, 		Archive_Find(menu_arc, "title.tim"), 0);
 	Gfx_LoadTex(&menu.tex_main, 		Archive_Find(menu_arc, "main.tim"), 0);
+	Gfx_LoadTex(&menu.tex_leftbg,   Archive_Find(menu_arc, "leftbg.tim"), 0);
+	Gfx_LoadTex(&menu.tex_storyhud, Archive_Find(menu_arc, "storyhud.tim"), 0);
+	Gfx_LoadTex(&menu.tex_storybg, Archive_Find(menu_arc, "BG.tim"), 0);
 	Gfx_LoadTex(&stage.tex_hud1, 		Archive_Find(menu_arc, "hud1.tim"), 0);
 	Mem_Free(menu_arc);
 	
@@ -343,6 +346,9 @@ void Menu_Load(MenuPage page)
 	FontData_Load(&menu.font_arial, Font_Arial, false);
 	FontData_Load(&menu.font_cdr, Font_CDR, false);
 	
+	//Initialize Girlfriend and stage
+	menu.characters[Character_Cuphead] = Char_CupGaming_New(FIXED_DEC(102,1), FIXED_DEC(118,1));
+
 	stage.camera.x = stage.camera.y = FIXED_DEC(0,1);
 	stage.camera.bzoom = FIXED_UNIT;
 	stage.gf_speed = 4;
@@ -395,6 +401,11 @@ void Menu_Load(MenuPage page)
 
 void Menu_Unload(void)
 {
+	//Free Menu Characters
+	for (u8 i = 0; i < Character_Max; i++)
+	{
+		Character_Free(menu.characters[i]);
+	}
 }
 
 void Menu_ToStage(StageId id, StageDiff diff, boolean story)
@@ -451,9 +462,7 @@ void Menu_Tick(void)
 			//Initialize page
 			if (menu.page_swap)
 			{
-				menu.page_state.title.logo_bump = (FIXED_DEC(7,1) / 24) - 1;
-				menu.page_state.title.fade = FIXED_DEC(255,1);
-				menu.page_state.title.fadespd = FIXED_DEC(90,1);
+				menu.page_state.title.logo_bump = (FIXED_DEC(6,1) / 24) - 1;
 			}
 			
 			//Draw white fade
@@ -482,16 +491,15 @@ void Menu_Tick(void)
 			
 			//Draw Friday Night Funkin' logo
 			if ((stage.flag & STAGE_FLAG_JUST_STEP) && (stage.song_step & 0x3) == 0 && menu.page_state.title.logo_bump == 0)
-				menu.page_state.title.logo_bump = (FIXED_DEC(7,1) / 24) - 1;
+				menu.page_state.title.logo_bump = (FIXED_DEC(6,1) / 24) - 1;
 			
 			static const fixed_t logo_scales[] = {
-				FIXED_DEC(1,1),
 				FIXED_DEC(101,100),
 				FIXED_DEC(102,100),
 				FIXED_DEC(103,100),
 				FIXED_DEC(105,100),
 				FIXED_DEC(110,100),
-				FIXED_DEC(97,100),
+				FIXED_DEC(1,1),
 			};
 
 			const u16 logo_width = 180;
@@ -523,20 +531,20 @@ void Menu_Tick(void)
 			RECT playbuttom_dst = {SCREEN_WIDTH2 + 28, SCREEN_HEIGHT - 45, 89, 29};
 			Gfx_DrawTex(&menu.tex_title, &playbuttom_src, &playbuttom_dst);
 
-			if (menu.page_state.title.play_lines_x++ >= 50 * play_buttom_lines_limit)
+			if (menu.page_state.title.play_lines_x++ >= 50)
 				menu.page_state.title.play_lines_x = 0;
 
 			for (u8 i = 0; i < play_buttom_lines_limit; i++)
 			{
 				RECT play_lines_src = {91, 223, 12, 29};
 				RECT play_lines_dst = {
-					SCREEN_WIDTH2 + 112 + menu.page_state.title.play_lines_x + i * 16, 
+					SCREEN_WIDTH2 + 112 + menu.page_state.title.play_lines_x + (i * 16), 
 					SCREEN_HEIGHT - 45,
 					 12, 
 					 29
 				};
 
-				menu.page_state.title.play_lines_opacity = menu.page_state.title.play_lines_x * 5;
+				menu.page_state.title.play_lines_opacity = menu.page_state.title.play_lines_x * 4;
 				u16 col = menu.page_state.title.play_lines_opacity;
 				FntPrint("%d",col);
 
@@ -664,10 +672,12 @@ void Menu_Tick(void)
 			{
 				const char *week;
 				StageId stage;
-				const char *name;
-				const char *tracks[3];
+				u32 col;
+				u32 selected_col;
 			} menu_options[] = {
-				{"1", StageId_Snake_Eyes, "DADDY DEAREST", {"BOPEEBO", "FRESH", "DADBATTLE"}},
+				{"1", StageId_Snake_Eyes, 0xFFF82062, 0xFFFFDCC9},
+				{"?", StageId_Snake_Eyes, 0xFF20B2F8, 0xFFC9F9FF},
+				{"?", StageId_Snake_Eyes, 0xFFF7A333, 0xFFFFDFCE},
 			};
 			
 			//Initialize page
@@ -675,21 +685,10 @@ void Menu_Tick(void)
 			{
 				menu.scroll = 0;
 				menu.page_param.stage.diff = StageDiff_Normal;
-				menu.page_state.title.fade = FIXED_DEC(0,1);
-				menu.page_state.title.fadespd = FIXED_DEC(0,1);
-			}
-			
-			//Draw white fade
-			if (menu.page_state.title.fade > 0)
-			{
-				static const RECT flash = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-				u8 flash_col = menu.page_state.title.fade >> FIXED_SHIFT;
-				Gfx_BlendRect(&flash, flash_col, flash_col, flash_col, 1);
-				menu.page_state.title.fade -= FIXED_MUL(menu.page_state.title.fadespd, timer_dt);
 			}
 			
 			//Draw difficulty selector
-			Menu_DifficultySelector(SCREEN_WIDTH - 52, SCREEN_HEIGHT2 + 19);
+			Menu_DifficultySelector(0, 60);
 			
 			//Handle option and selection
 			if (menu.trans_time > 0 && (menu.trans_time -= timer_dt) <= 0)
@@ -701,7 +700,7 @@ void Menu_Tick(void)
 				menu.select = Menu_Scroll(menu.select, COUNT_OF(menu_options) - 1, &menu.sounds[0]);
 				
 				//Select option if cross is pressed
-				if (pad_state.press & (PAD_START | PAD_CROSS))
+				if (pad_state.press & (PAD_START | PAD_CROSS) && *menu_options[menu.select].week != '?')
 				{
 					//Play Confirm Sound
 					Audio_PlaySFX(menu.sounds[1], 80);
@@ -724,63 +723,41 @@ void Menu_Tick(void)
 				}
 			}
 			
-			//Draw week name and tracks
-			menu.font_arial.draw(&menu.font_arial,
-				menu_options[menu.select].name,
-				SCREEN_WIDTH - 12,
-				10,
-				FontAlign_Right
-			);
-			
-			const char * const *trackp = menu_options[menu.select].tracks;
-			for (size_t i = 0; i < COUNT_OF(menu_options[menu.select].tracks); i++, trackp++)
-			{
-				if (*trackp != NULL)
-					menu.font_arial.draw_col(&menu.font_arial,
-						*trackp,
-						40,
-						SCREEN_WIDTH2 + (i * 12),
-						FontAlign_Center,
-						229 >> 1,
-						87 >> 1,
-						119 >> 1
-					);
-			}
-			
-			//Draw upper strip
-			RECT name_bar = {0, 22, SCREEN_WIDTH, 97};
-			Gfx_DrawRect(&name_bar, 249, 207, 81);
-
-			//Draw "tracks"
-			RECT track_src = {74, 70, 58, 10};
-			RECT track_dst = {
-				15,
-				SCREEN_WIDTH2 - 15,
-				58,
-				10
-			};
-			Gfx_DrawTex(&menu.tex_story, &track_src, &track_dst);
-			
-			//Draw options
-			s32 next_scroll = menu.select * FIXED_DEC(48,1);
-			menu.scroll += (next_scroll - menu.scroll) / 8;
-			
 			//Draw all options
 			for (u8 i = 0; i < COUNT_OF(menu_options); i++)
 			{
-				s32 y = 132 + (i * 48) - (menu.scroll >> FIXED_SHIFT);
+				s32 y = SCREEN_HEIGHT2 - 16 + (i * 22);
 				if (y <= 16)
 					continue;
 				if (y >= SCREEN_HEIGHT)
 					break;
 
-				//Draw the selected option with a cool effect
-				if (menu.next_page == MenuPage_Stage && animf_count & 2)
-					Menu_DrawWeek(menu_options[menu.select].week, SCREEN_WIDTH2 - 64, 132 + (menu.select * 48) - (menu.scroll >> FIXED_SHIFT), true);
-
 				//Draw all options
-				Menu_DrawWeek(menu_options[i].week, SCREEN_WIDTH2 - 64, y, false);
-		}
+				Menu_DrawWeek(menu_options[i].week, 28, y, (i == menu.select) ? menu_options[i].selected_col : menu_options[i].col, (i == menu.select));
+			}
+
+			//Draw "Story Mode"
+			RECT story_src = {0, 0, 182, 29};
+			RECT story_dst = {-12, 10, 182, 29};
+
+			Gfx_DrawTex(&menu.tex_main, &story_src, &story_dst);
+
+			RECT leftbg_src = {0, 0, 240, 240};
+			RECT leftbg_dst = {0, 0, SCREEN_HEIGHT, SCREEN_HEIGHT};
+			Gfx_DrawTex(&menu.tex_leftbg, &leftbg_src, &leftbg_dst);
+
+
+			if (menu.select == 0)
+			{
+				//Draw Cuphead
+				menu.characters[Character_Cuphead]->tick(menu.characters[Character_Cuphead]);
+
+				//Draw Cuphead Background
+				RECT cupbg_src = {0, 0, 240, 189};
+				RECT cupbg_dst = {100, 0, SCREEN_HEIGHT, 252};
+				Gfx_DrawTex(&menu.tex_storybg, &cupbg_src, &cupbg_dst);
+			}
+
 			break;
 	}
 		case MenuPage_Freeplay:

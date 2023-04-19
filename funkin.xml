@@ -71,6 +71,9 @@
 				<!-- Girlfriend assets -->
 				<file name = "gf.arc" type = "data" source = "iso/characters/gf/main.arc"/>
 				<file name = "speaker.tim" type = "data" source = "iso/characters/gf/speaker.tim"/>
+
+				<!-- Cuphead Menu assets -->
+				<file name = "cupgame.tim" type = "data" source = "iso/menu/characters/cuphead/cupgame.tim"/>
 			</dir>
 
 			<!-- Sounds effects -->

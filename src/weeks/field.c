@@ -41,7 +41,7 @@ void Back_Field_DrawBG(StageBack *back)
 {
 	Back_Field *this = (Back_Field*)back;
 	
-	fixed_t fx, fy, fscroll;
+	fixed_t fx, fy;
 
 	//Draw foreground
 	fx = stage.camera.x;
@@ -60,9 +60,8 @@ void Back_Field_DrawBG(StageBack *back)
 	Stage_DrawTex(&this->tex_back2, &foreground_src, &foreground_dst, stage.camera.bzoom);
 
 	//Draw trees
-	fscroll = FIXED_DEC(45,100);
-	fx = FIXED_MUL(stage.camera.x, fscroll);
-	fy = FIXED_MUL(stage.camera.y, fscroll);
+	fx = stage.camera.x >> 1;
+	fy = stage.camera.y >> 1;
 	
 	RECT trees_src = {0, 0, 255, 255};
 	RECT_FIXED trees_dst = {
@@ -77,9 +76,8 @@ void Back_Field_DrawBG(StageBack *back)
 	Stage_DrawTex(&this->tex_back1, &trees_src, &trees_dst, stage.camera.bzoom);
 
 	//Draw background
-	fscroll = FIXED_DEC(2,10);
-	fx = FIXED_MUL(stage.camera.x, fscroll);
-	fy = FIXED_MUL(stage.camera.y, fscroll);
+	fx = (stage.camera.x * 2) >> 3;
+	fy = (stage.camera.y * 2) >> 3;
 	
 	RECT background_src = {0, 0, 228, 255};
 	RECT_FIXED background_dst = {

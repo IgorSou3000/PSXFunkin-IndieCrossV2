@@ -2,6 +2,7 @@ all: \
 	iso/save16.tim \
 	iso/menu/menu.arc \
 	iso/menu/loading.tim \
+	iso/menu/characters/cuphead/cupgame.tim \
 	iso/font/font1.tim \
 	iso/hud/hud0.tim \
 	iso/hud/hud0cup.tim \
@@ -22,7 +23,7 @@ iso/%.arc:
 	tools/funkinarcpak/funkinarcpak $@ $^
 
 # Menu
-iso/menu/menu.arc: iso/menu/back.tim iso/menu/titlebg.tim iso/menu/story.tim iso/menu/title.tim iso/menu/main.tim iso/menu/hud1.tim
+iso/menu/menu.arc: iso/menu/back.tim iso/menu/title/titlebg.tim iso/menu/title/title.tim iso/menu/main.tim iso/menu/storymode/leftbg.tim iso/menu/storymode/storyhud.tim iso/menu/storymode/BG.tim iso/menu/hud1.tim
 
 # BF
 iso/characters/bf/main.arc: iso/characters/bf/bf0.tim iso/characters/bf/bf1.tim iso/characters/bf/bf2.tim iso/characters/bf/bf3.tim iso/characters/bf/bf4.tim iso/characters/bf/bf5.tim iso/characters/bf/bf6.tim
