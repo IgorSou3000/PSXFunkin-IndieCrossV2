@@ -17,6 +17,8 @@
 #include "menu/menu.h"
 #include "stage/stage.h"
 
+Gfx_Tex cuphead_trans_tex;
+
 //Game loop
 GameLoop gameloop;
 
@@ -63,6 +65,7 @@ int main(int argc, char **argv)
 	
 	Timer_Init();
 	Font_Init();
+	Gfx_LoadTex(&cuphead_trans_tex, IO_Read("\\MENU\\CUPTRANS.TIM;1"), GFX_LOADTEX_FREE);
 
 	#ifndef NOSAVE
 	MCRD_Init();

@@ -195,28 +195,6 @@ void Gfx_BlendRect(const RECT *rect, u8 r, u8 g, u8 b, u8 mode)
 	nextpri += sizeof(DR_TPAGE);
 }
 
-void Gfx_BlendTexCol(Gfx_Tex *tex, const RECT *src, const RECT *dst, u8 r, u8 g, u8 b, u8 mode)
-{	
-  //Add quad
-	POLY_FT4 *quad = (POLY_FT4*)nextpri;
-	setPolyFT4(quad);
-	setUVWH(quad, src->x, src->y, src->w, src->h);
-	setXYWH(quad, dst->x, dst->y, dst->w, dst->h);
-	setRGB0(quad, r, g, b);
-	setSemiTrans(quad, 1);
-	
-	quad->tpage = tex->tpage | getTPage(0, mode, 0, 0);
-	quad->clut = tex->clut;
-	
-	addPrim(ot[db], quad);
-	nextpri += sizeof(POLY_FT4);
-}
-
-void Gfx_BlendTex(Gfx_Tex *tex, const RECT *src, const RECT *dst, u8 mode)
-{
-	Gfx_BlendTexCol(tex, src, dst, 128, 128, 128, mode);
-}
-
 void Gfx_DrawTexCol(Gfx_Tex *tex, const RECT *src, const RECT *dst, u8 r, u8 g, u8 b)
 {	
   //Add quad

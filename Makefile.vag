@@ -1,6 +1,7 @@
 FILES = $(addsuffix .vag, $(basename $(wildcard iso/sounds/*.ogg))) \
  $(addsuffix .vag, $(basename $(wildcard iso/sounds/*/*.ogg))) \
- $(addsuffix .vag, $(basename $(wildcard iso/sounds/*/*/*.ogg)))
+ $(addsuffix .vag, $(basename $(wildcard iso/sounds/*/*/*.ogg))) \
+ $(addsuffix .vag, $(basename $(wildcard iso/sounds/*/*/*/*.ogg)))
 
 all: \
 		$(FILES) \

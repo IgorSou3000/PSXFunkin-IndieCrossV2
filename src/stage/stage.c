@@ -1490,7 +1490,7 @@ void Stage_Tick(void)
 				if (stage.story)
 					Menu_Load(MenuPage_Story);
 				else
-					Menu_Load(MenuPage_Freeplay);
+					Menu_Load(MenuPage_Freeplay_Selection);
 
 				LoadScr_End();
 				

@@ -143,7 +143,7 @@ Character *Char_Dad_New(fixed_t x, fixed_t y)
 	this->character.health_i = 1;
 
 	//Health Bar
-	this->character.health_b = 0xFFAE67D0;
+	this->character.health_b = 0xFFAE134C;
 
 	//Character scale
 	this->character.scale = FIXED_DEC(1,1);

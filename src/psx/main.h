@@ -7,6 +7,8 @@
 #ifndef PSXF_GUARD_MAIN_H
 #define PSXF_GUARD_MAIN_H
 
+#include "gfx.h"
+
 //Game loop
 typedef enum
 {
@@ -15,6 +17,9 @@ typedef enum
 } GameLoop;
 
 extern GameLoop gameloop;
+
+//Special texture (cuphead transition)
+extern Gfx_Tex cuphead_trans_tex;
 
 //Error handler
 extern char error_msg[0x200];

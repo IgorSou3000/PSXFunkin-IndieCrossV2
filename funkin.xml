@@ -24,6 +24,7 @@
 			
 			<!-- Menu assets -->
 			<dir name = "menu">
+				<file name = "cuptrans.tim" type = "data" source = "iso/hud/special.tim"/>
 				<file name = "loading.tim" type = "data" source = "iso/menu/loading.tim"/>
 				<file name = "menu.arc" type = "data" source = "iso/menu/menu.arc"/>
 			</dir>
@@ -90,6 +91,7 @@
 				<file name = "intro0.vag" type = "data" source = "iso/sounds/stage/intro0.vag"/>
 
 				<!-- Cuphead Sounds -->
+				<file name = "cuptrans.vag" type = "data" source = "iso/sounds/menu/cuphead/trans.vag"/>
 				<file name = "parry.vag" type = "data" source = "iso/sounds/stage/cuphead/parry.vag"/>
 			</dir>
 
